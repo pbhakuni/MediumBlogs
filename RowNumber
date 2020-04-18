@@ -1,0 +1,13 @@
+#Creating Dataframes using PySpark
+from pyspark.sql.window import Window
+from pyspark.sql.functions import *
+
+employee_df = spark.createDataFrame(
+  [('Sam','IT',1000),('Adam','IT',2000),('Justina','Marketing',500),('Steve','Fashion',4000)],
+  ['employeeName','employeeDept','employeeSalary']
+)
+
+#Finding the row number across Salary within each department
+window = Window.partitionBy("employeeDept").orderBy(col("employeeSalary").desc())
+
+employee_df.select("*",row_number().over(window).alias("Row_Number")).show()
